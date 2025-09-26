@@ -17,13 +17,13 @@ export interface AuthCreationAttributes extends Optional<AuthAttributes, "id"> {
 
 // This is the model for the Auth model
 export class Auth extends Model<AuthAttributes, AuthCreationAttributes> implements AuthAttributes {
-    public id!: number;
-    public email!: string;
-    public password!: string;
-    public refreshToken!: string;
-    public refreshTokenExpiresAt!: Date;
-    public createdAt!: Date;
-    public updatedAt!: Date;
+    declare id: number;
+    declare email: string;
+    declare password: string;
+    declare refreshToken: string;
+    declare refreshTokenExpiresAt: Date;
+    declare createdAt: Date;
+    declare updatedAt: Date;
 }
 
 // This is the schema for the Auth model

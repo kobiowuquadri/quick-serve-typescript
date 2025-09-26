@@ -44,8 +44,8 @@ export const loginService = async (data: LoginRequest, callback: (data: LoginRes
       return callback(messageHandler("Invalid credentials", false, UNAUTHORIZED, {}));
     }
 
-    const isValid = await verifyPassword(password, user.password);
-    if (!isValid) {
+    const isValidPassword = await verifyPassword(password, user.password);
+    if (!isValidPassword) {
       return callback(messageHandler("Invalid credentials", false, UNAUTHORIZED, {}));
     }
 
@@ -58,9 +58,9 @@ export const loginService = async (data: LoginRequest, callback: (data: LoginRes
     return callback(messageHandler("Login successful", true, SUCCESS, {
       accessToken,
       refreshToken,
-      user: { id: user.id, email: user.email }
+      user
     }));
   } catch (error) {
-    return callback(messageHandler("An error occured while processing your login.", false, INTERNAL_SERVER_ERROR, {}));
+    return callback(messageHandler("An error occured while processing your login.", false, INTERNAL_SERVER_ERROR, error));
   }
 };

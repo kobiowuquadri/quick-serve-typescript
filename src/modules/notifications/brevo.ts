@@ -4,7 +4,7 @@ const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || '';
 const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Vyntra';
 
-const BREVO_API_URL = process.env.BREVO_API_URL;
+const BREVO_API_URL = process.env.BREVO_API_URL || '';
 
 export interface BrevoEmailOptions {
   to: string;
@@ -24,7 +24,7 @@ export async function sendBrevoEmail(options: BrevoEmailOptions): Promise<boolea
       textContent: options.text,
       attachment: options.attachments,
     };
-    await axios.post(BREVO_API_URL, payload, {
+    await axios.post(BREVO_API_URL || '', payload, {
       headers: {
         'api-key': BREVO_API_KEY,
         'Content-Type': 'application/json',

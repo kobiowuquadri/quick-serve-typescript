@@ -18,7 +18,11 @@ export const registerService = async (data: RegisterRequest, callback: (data: Re
 
     const hashedPassword = await hashPassword(password);
     const user = await Auth.create({ 
-      email, password: hashedPassword, refreshToken, refreshTokenExpiresAt, createdAt: new Date(), updatedAt: new Date()
+      email, 
+      password: hashedPassword, 
+      refreshToken, 
+      refreshTokenExpiresAt, createdAt: new Date(), 
+      updatedAt: new Date()
     });
 
     return callback(messageHandler("Registration successful", true, SUCCESS, { 

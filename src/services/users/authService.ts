@@ -3,7 +3,7 @@ import { generateToken, verifyPassword, hashPassword, messageHandler } from "../
 import { INTERNAL_SERVER_ERROR, SUCCESS, UNAUTHORIZED, BAD_REQUEST, NOT_FOUND, CONFLICT } from "../../constants/statusCode.js"
 import { RegisterRequest, RegisterResponse, LoginRequest, LoginResponse } from "../../types/users/auth.js"
 
-export const registerService = async (data: { email: string; password: string }, callback: (data: RegisterResponse) => void) => {
+export const registerService = async (data: RegisterRequest, callback: (data: RegisterResponse) => void) => {
   try {
     const { email, password } = data;
 
@@ -27,11 +27,11 @@ export const registerService = async (data: { email: string; password: string },
       user: { id: user.id, email: user.email }
     }));
   } catch (error) {
-    return callback(messageHandler("Internal server error", false, INTERNAL_SERVER_ERROR, {}));
+    return callback(messageHandler("An error occured while processing your registration.", false, INTERNAL_SERVER_ERROR, {}));
   }
 };
 
-export const loginService = async (data: { email: string; password: string }, callback: (data: LoginResponse) => void) => {
+export const loginService = async (data: LoginRequest, callback: (data: LoginResponse) => void) => {
   try {
     const { email, password } = data;
 
@@ -57,6 +57,6 @@ export const loginService = async (data: { email: string; password: string }, ca
       user: { id: user.id, email: user.email }
     }));
   } catch (error) {
-    return callback(messageHandler("Internal server error", false, INTERNAL_SERVER_ERROR, {}));
+    return callback(messageHandler("An error occured while processing your login.", false, INTERNAL_SERVER_ERROR, {}));
   }
 };

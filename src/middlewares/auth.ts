@@ -1,8 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { AuthRequest } from '../types/users/auth.js';
-import { Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-export const verify = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const verify = (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers['authorization'];
     if (!authHeader) {
@@ -14,12 +13,12 @@ export const verify = (req: AuthRequest, res: Response, next: NextFunction) => {
       return res.status(404).json({ success: false, message: 'Token not found!' });
     }
     
-    jwt.verify(token, process.env.JWT_SECRET as string, (err: any, decodedToken: any) => {
+    jwt.verify(token, process.env.SECRET_KEY as string, (err: any, decodedToken: any) => {
       if (err) {
         return res.status(401).json({ auth: false, message: 'Unauthorized' });
       }
       
-      req.user = decodedToken; 
+      (req as any).user = decodedToken; 
       next();
     });
   } catch (err) {

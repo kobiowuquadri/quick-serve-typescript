@@ -62,3 +62,12 @@ export const AuthSchema = {
         defaultValue: DataTypes.NOW,
     },
 } as const;
+
+// Initialize and export the Sequelize model instance
+Auth.init(AuthSchema, {
+    sequelize,
+    modelName: "Auth",
+    tableName: "auths",
+});
+
+export { Auth as default };

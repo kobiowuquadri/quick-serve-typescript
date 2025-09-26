@@ -1,28 +1,20 @@
-import { Request } from "express";
-
-export interface AuthRequest extends Request {
-    user: {
-        id: number;
-        email: string;
-        password: string;
-        refreshToken: string;
-        refreshTokenExpiresAt: Date;
-        createdAt: Date;
-        updatedAt: Date;
-    };
-}
-
-export interface AuthResponse {
-    success: boolean;
+export interface BaseResponse {
     message: string;
+    success: boolean;
+    statusCode: number;
     data: any;
-    user: {
-        id: number;
-        email: string;
-        password: string;
-        refreshToken: string;
-        refreshTokenExpiresAt: Date;
-        createdAt: Date;
-        updatedAt: Date;
-    };
 }
+
+export interface RegisterRequest {
+    email: string;
+    password: string;
+}
+
+export type RegisterResponse = BaseResponse;
+
+export interface LoginRequest {
+    email: string;
+    password: string;
+}
+
+export type LoginResponse = BaseResponse;

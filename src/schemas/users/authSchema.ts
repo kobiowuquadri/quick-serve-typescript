@@ -62,5 +62,3 @@ export const AuthSchema = {
         defaultValue: DataTypes.NOW,
     },
 } as const;
-
-export const AuthModel = sequelize.define('Auth', AuthSchema);

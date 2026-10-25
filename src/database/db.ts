@@ -2,12 +2,12 @@ import { Sequelize } from 'sequelize';
 import { config } from "../config/config.js";
 
 const sequelize = new Sequelize(
-  config.database.name || '',
-  config.database.user || '',
-  config.database.password || '',
+  config.database.name,
+  config.database.user,
+  config.database.password,
   {
     host: config.database.host,
-    port: Number(config.database.port) | 3306,
+    port: config.database.port,
     dialect: 'mysql',
     logging: false,
     pool: {
@@ -19,16 +19,13 @@ const sequelize = new Sequelize(
   }
 )
 
+// Throws on failure so the server never starts without a database
 export const connectToDB = async () => {
-  try {
-    await sequelize.authenticate()
-    console.log("Connected to the database Successfully.")
+  await sequelize.authenticate()
+  console.log("Connected to the database Successfully.")
 
-    await sequelize.sync()
-    
-  } catch (error : any) {
-    console.log("Unable to connect to the database:", error.message)
-  }
+  // Creates missing tables only; it never alters existing ones (add migrations for schema changes)
+  await sequelize.sync()
 }
 
 export default sequelize

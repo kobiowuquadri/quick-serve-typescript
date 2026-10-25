@@ -2,32 +2,36 @@
   "name": "quick_serve_typescript",
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon --watch \"src/**/*.ts\" --exec tsx src/index.ts",
-    "build": "tsc",
-    "postinstall": "tsc"
+    "dev": "nodemon",
+    "build": "tsc && npm run copy:views",
+    "copy:views": "node -e \"require('fs').cpSync('src/modules/views', 'dist/modules/views', { recursive: true })\"",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@types/bcrypt": "^6.0.0",
     "axios": "^1.9.0",
-    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.6.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.18.2",
+    "express-rate-limit": "^8.7.1",
     "express-validator": "^7.0.1",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.2",
+    "multer": "^2.5.0",
     "mysql2": "^3.2.0",
-    "nodemailer": "^6.9.1",
+    "nodemailer": "^10.2.1",
     "nodemailer-express-handlebars": "^7.0.0",
     "sequelize": "^6.31.0"
   },
@@ -40,7 +44,7 @@
     "@types/morgan": "^1.9.10",
     "@types/multer": "^1.4.13",
     "@types/node": "^18.15.11",
-    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer": "^8.0.2",
     "nodemon": "^3.1.0",
     "tsx": "^3.12.7",
     "typescript": "^5.0.3"

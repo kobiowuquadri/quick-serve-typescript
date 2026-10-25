@@ -1,10 +1,5 @@
 import axios from 'axios';
-
-const BREVO_API_KEY = process.env.BREVO_API_KEY;
-const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || '';
-const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Vyntra';
-
-const BREVO_API_URL = process.env.BREVO_API_URL || '';
+import { config } from '../../config/config.js';
 
 export interface BrevoEmailOptions {
   to: string;
@@ -17,23 +12,26 @@ export interface BrevoEmailOptions {
 export async function sendBrevoEmail(options: BrevoEmailOptions): Promise<boolean> {
   try {
     const payload = {
-      sender: { email: BREVO_SENDER_EMAIL, name: BREVO_SENDER_NAME },
+      sender: { email: config.brevo.senderEmail, name: config.brevo.senderName },
       to: [{ email: options.to }],
       subject: options.subject,
       htmlContent: options.html,
       textContent: options.text,
       attachment: options.attachments,
     };
-    await axios.post(BREVO_API_URL || '', payload, {
+    await axios.post(config.brevo.apiUrl, payload, {
       headers: {
-        'api-key': BREVO_API_KEY,
+        'api-key': config.brevo.apiKey,
         'Content-Type': 'application/json',
         'accept': 'application/json',
       },
+      timeout: 10000,
     });
     return true;
   } catch (error) {
-    console.error('Brevo email error:', error);
+    // Don't log the whole axios error: it contains the request headers, including the API key
+    const detail = axios.isAxiosError(error) ? error.response?.data ?? error.message : error;
+    console.error('Brevo email error:', detail);
     return false;
   }
-} 
+}

@@ -1,38 +1,29 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import { connectToDB } from './database/db.js' 
-import router from './routes/index.js'
-import morgan from 'morgan';
-import type { RequestHandler } from 'express';
-import cors from "cors"
-import cookieParser from 'cookie-parser'
-dotenv.config();
+import { config } from './config/config.js'
+import app from './app.js'
+import sequelize, { connectToDB } from './database/db.js'
 
+const start = async () => {
+    await connectToDB()
 
-//routes
-const port = process.env.PORT
+    const server = app.listen(config.server.port, () => {
+        console.log(`Server running on port ${config.server.port}`)
+    })
 
-const app = express()
+    // Let in-flight requests finish and close DB connections when the host stops the app (e.g. on redeploy)
+    const shutdown = (signal: string) => {
+        console.log(`${signal} received, shutting down...`)
+        server.close(async () => {
+            await sequelize.close()
+            process.exit(0)
+        })
+        setTimeout(() => process.exit(1), 10_000).unref()
+    }
 
-//middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
-app.use(morgan('dev') as RequestHandler)
-app.use(cookieParser())
+    process.on('SIGTERM', shutdown)
+    process.on('SIGINT', shutdown)
+}
 
- 
-app.use(cors())
-
-
-//routes
-router(app)
-
-connectToDB()
-
-app.get('/', (req: any, res: any) => {
-    res.send('Backend Connected Successfully')
-})
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`)
+start().catch((error) => {
+    console.error('Failed to start server:', error)
+    process.exit(1)
 })

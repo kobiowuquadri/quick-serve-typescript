@@ -2,13 +2,19 @@ services:
   - type: web
     name: quick_serve_typescript
     env: node
-    buildCommand: npm install && npm run build
+    # --include=dev: NODE_ENV=production would otherwise skip typescript and @types needed by the build
+    buildCommand: npm install --include=dev && npm run build
     startCommand: npm start
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 5000
+      - key: TRUST_PROXY
+        value: 1
+      - key: CORS_ORIGIN
+        sync: false
       - key: DB_NAME
         sync: false
       - key: DB_USER

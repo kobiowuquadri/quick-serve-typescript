@@ -1,32 +1,48 @@
-export const registerValidation = {
-    email: {
-        in: 'body',
-        isEmail: true,
+import type { Schema } from 'express-validator';
+import { passwordValidator } from '../../utils/index.js';
+
+const email: Schema[string] = {
+    in: ['body'],
+    trim: true,
+    isEmail: {
         errorMessage: 'Invalid email',
     },
+    toLowerCase: true,
+};
+
+export const registerValidation: Schema = {
+    email,
     password: {
-        in: 'body',
-        isString: true,
-        isLength: {
-            options: { min: 8 },
-            errorMessage: 'Password must be at least 8 characters long',
+        in: ['body'],
+        isString: {
+            errorMessage: 'Invalid password',
+            bail: true,
         },
-        errorMessage: 'Invalid password',
+        custom: {
+            options: (value: string) => passwordValidator(value),
+            errorMessage: 'Password must be 8-72 characters and include uppercase, lowercase, number and symbol',
+        },
     }
 }
 
-export const loginValidation = {
-    email: {
-        in: 'body',
-        isEmail: true,
-        errorMessage: 'Invalid email',
-    },
+export const loginValidation: Schema = {
+    email,
     password: {
-        in: 'body',
-        isString: true,
+        in: ['body'],
+        isString: {
+            errorMessage: 'Invalid password',
+        },
         notEmpty: {
             errorMessage: 'Password is required',
         },
-        errorMessage: 'Invalid password',
+    }
+}
+
+export const refreshTokenValidation: Schema = {
+    refreshToken: {
+        in: ['body'],
+        isJWT: {
+            errorMessage: 'Invalid refresh token',
+        },
     }
 }

@@ -7,13 +7,13 @@ export interface AuthAttributes {
     email: string;
     password: string;
     refreshToken: string;
-    refreshTokenExpiresAt: Date;
+    refreshTokenExpiresAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }
 
 // This is the creation attributes for the Auth model
-export interface AuthCreationAttributes extends Optional<AuthAttributes, "id"> {}
+export interface AuthCreationAttributes extends Optional<AuthAttributes, "id" | "refreshToken" | "refreshTokenExpiresAt" | "createdAt" | "updatedAt"> {}
 
 // This is the model for the Auth model
 export class Auth extends Model<AuthAttributes, AuthCreationAttributes> implements AuthAttributes {
@@ -21,7 +21,7 @@ export class Auth extends Model<AuthAttributes, AuthCreationAttributes> implemen
     declare email: string;
     declare password: string;
     declare refreshToken: string;
-    declare refreshTokenExpiresAt: Date;
+    declare refreshTokenExpiresAt: Date | null;
     declare createdAt: Date;
     declare updatedAt: Date;
 }
@@ -36,6 +36,7 @@ export const AuthSchema = {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
     password: {
         type: DataTypes.STRING,

@@ -1,27 +1,19 @@
-import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
+import { verifyToken, messageHandler } from '../utils/index.js';
+import { UNAUTHORIZED } from '../constants/statusCode.js';
 
+// Requires "Authorization: Bearer <access token>" and exposes the token payload as req.user
 export const verify = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const authHeader = req.headers['authorization'];
-    if (!authHeader) {
-      return res.status(404).json({ success: false, message: 'Authorization header not found!' });
-    }
-    
-    const token = authHeader.split(' ')[1];
-    if (!token) {
-      return res.status(404).json({ success: false, message: 'Token not found!' });
-    }
-    
-    jwt.verify(token, process.env.SECRET_KEY as string, (err: any, decodedToken: any) => {
-      if (err) {
-        return res.status(401).json({ auth: false, message: 'Unauthorized' });
-      }
-      
-      (req as any).user = decodedToken; 
-      next();
-    });
-  } catch (err) {
-    return res.status(500).json({ message: "Server Error" });
+  const [scheme, token] = (req.headers.authorization || '').split(' ');
+  if (scheme?.toLowerCase() !== 'bearer' || !token) {
+    return res.status(UNAUTHORIZED).json(messageHandler('Authorization token not found', false, UNAUTHORIZED));
   }
+
+  const result = verifyToken(token, 'access');
+  if (!result.success) {
+    return res.status(UNAUTHORIZED).json(messageHandler('Invalid or expired token', false, UNAUTHORIZED));
+  }
+
+  req.user = result.decoded;
+  next();
 };

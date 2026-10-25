@@ -1,20 +1,25 @@
-export interface BaseResponse {
-    message: string;
-    success: boolean;
-    statusCode: number;
-    data: any;
-}
-
 export interface RegisterRequest {
     email: string;
     password: string;
 }
-
-export type RegisterResponse = BaseResponse;
 
 export interface LoginRequest {
     email: string;
     password: string;
 }
 
-export type LoginResponse = BaseResponse;
+export interface RefreshTokenRequest {
+    refreshToken: string;
+}
+
+// The only user fields the API ever returns
+export interface UserResponse {
+    id: number;
+    email: string;
+    createdAt: Date;
+}
+
+export interface AuthTokens {
+    accessToken: string;
+    refreshToken: string;
+}
